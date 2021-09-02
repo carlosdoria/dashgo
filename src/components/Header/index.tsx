@@ -1,11 +1,15 @@
-import { Flex, Icon, Input, HStack, Text, Box, Avatar } from '@chakra-ui/react'
-import { RiNotificationLine, RiSearchLine, RiUserAddLine } from 'react-icons/ri'
+import { Flex, useBreakpointValue } from '@chakra-ui/react'
 import Logo from './Logo'
 import NotificationNax from './NotificationNax'
 import Profile from './Profile'
 import SearchBar from './SearchBar'
 
 export function Header () {
+  const isWideVersion = useBreakpointValue({
+    base: false,
+    lg: true
+  })
+
   return(
     <Flex
       as='header'
@@ -18,8 +22,7 @@ export function Header () {
       align='center'
     >
       <Logo />
-
-     <SearchBar />
+    { isWideVersion && <SearchBar /> }
     
       <Flex
         align='center'
@@ -28,7 +31,7 @@ export function Header () {
        
        <NotificationNax />
       
-        <Profile />
+        <Profile showProfileData={isWideVersion} />
       
       </Flex>
     
