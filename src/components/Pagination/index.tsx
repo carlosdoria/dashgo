@@ -4,6 +4,7 @@ import { PaginationItem } from "./PaginationItem";
 export function Pagination () {
   return (
     <HStack
+      direction={['column', 'row']}
       spacing='6'
       mt='8'
       justify='space-between'
