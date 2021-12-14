@@ -1,7 +1,37 @@
-import { Box, Button, HStack } from "@chakra-ui/react";
+import { Box, Text, HStack } from "@chakra-ui/react";
 import { PaginationItem } from "./PaginationItem";
 
-export function Pagination () {
+interface PaginationProps {
+  totalCountOfRegisters: number
+  registersPerPage?: number
+  currentPage?: number
+  onPageChange: (page: number) => void
+}
+
+export function Pagination ({
+  totalCountOfRegisters,
+  registersPerPage = 10,
+  currentPage = 1,
+  onPageChange
+}: PaginationProps) {
+  const lastPage = Math.round(totalCountOfRegisters / registersPerPage)
+
+  const sinblingsCount = 1
+
+  function generatePagesArray (from: number, to: number) {
+    return [...new Array(to - from)]
+    .map(( _, index ) => from + index + 1)
+    .filter(page => page > 0)
+  }
+
+  const previousPages = currentPage > sinblingsCount
+    ? generatePagesArray(currentPage - 1 - sinblingsCount, currentPage - 1)
+    : []
+
+  const nextPages = currentPage < lastPage
+    ? generatePagesArray(currentPage, Math.min(currentPage + sinblingsCount, lastPage))
+    : []
+
   return (
     <HStack
       direction={['column', 'row']}
@@ -15,12 +45,40 @@ export function Pagination () {
       </Box>
 
       <HStack spacing='2'>
-        <PaginationItem number={1} isCurrent />
-        <PaginationItem number={2} />
-        <PaginationItem number={3} />
-        <PaginationItem number={4} />
-        <PaginationItem number={5} />
-        <PaginationItem number={6} />
+
+        {/* FIRST PAGE */}
+        {currentPage > (1 + sinblingsCount) && (
+          <>
+            <PaginationItem number={1} />
+            {currentPage > (2 + sinblingsCount) &&
+              <Text color='gray.300' width='6' textAlign='center'>...</Text>
+            }
+          </>
+        )}
+
+        {/* PREVIOUS PAGE */}
+        {previousPages.length > 0 && previousPages.map(page => (
+          <PaginationItem key={page} number={page} />
+        ))}
+
+        {/* CURRENT PAGE */}
+        <PaginationItem number={currentPage} isCurrent />
+      
+        {/* NEXT PAGE */}
+        {nextPages.length > 0 && nextPages.map(page => (
+          <PaginationItem key={page} number={page} />
+        ))}
+      
+        {/* LAST PAGE */}
+        {currentPage < (lastPage - sinblingsCount) && (
+          <>
+            {(currentPage + sinblingsCount + 1 ) < lastPage && 
+              <Text color='gray.300' width='6' textAlign='center'>...</Text>
+            }
+            <PaginationItem number={lastPage} />
+          </>
+        )}
+        
       </HStack>
     </HStack>
   )
