@@ -1,4 +1,5 @@
 import { useQuery } from 'react-query'
+import { number } from 'yup/lib/locale'
 import { api } from '../api'
 
 type User = {
@@ -8,8 +9,19 @@ type User = {
   createdAt: string
 }
 
-export async function getUsers (): Promise<User[]> {
-  const { data } = await api.get('/users')
+type GetUsersResponse = {
+  totalCount: number
+  users: User[]
+}
+
+export async function getUsers (page: number): Promise<GetUsersResponse> {
+  const { data, headers } = await api.get('/users', {
+    params: {
+      page
+    }
+  })
+
+  const totalCount = Number(headers['x-total-count'])
 
   const users = data.users.map( (user) => ({
     id: user.id,
@@ -22,11 +34,14 @@ export async function getUsers (): Promise<User[]> {
     }), 
   }))
 
-  return users
+  return {
+    totalCount,
+    users
+  }
 }
 
-export function useUsers () {
-  return useQuery('users', getUsers, {
+export function useUsers (page: number) {
+  return useQuery(['users', page], () => getUsers(page), {
     staleTime: 1000 * 5 // seconds
   })
 }
