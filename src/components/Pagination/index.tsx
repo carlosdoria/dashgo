@@ -14,7 +14,7 @@ export function Pagination ({
   currentPage = 1,
   onPageChange
 }: PaginationProps) {
-  const lastPage = Math.round(totalCountOfRegisters / registersPerPage)
+  const lastPage = Math.ceil(totalCountOfRegisters / registersPerPage)
 
   const sinblingsCount = 1
 
@@ -41,7 +41,7 @@ export function Pagination ({
       align='center'
     >
       <Box>
-        <strong>0</strong> - <strong>10</strong> de <strong>100</strong>
+        <strong>0</strong> - <strong>10</strong> de <strong>{totalCountOfRegisters}</strong>
       </Box>
 
       <HStack spacing='2'>
